@@ -1,0 +1,86 @@
+﻿@using Web_App_Task_1.Models
+
+@{ 
+    var data = ViewBag.data as List<CategoryModel>;
+    var imagepath = "";
+    int catid = 0;
+}
+
+
+
+@foreach (var d in data.Distinct().OrderBy(a => a.CategoryID))
+{
+    <div class="container" style="margin-top:20px">
+        <div class="col-lg-12 row">
+            <div class="col-lg-12">
+                <div class="col-lg-12 row form-group">
+                    <div class="col-lg-3">
+                        <label>Category Name</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input type="text" id="CatName" class="form-control" value="@d.CategoryName" />
+                    </div>
+                </div>
+                <div class="col-lg-12 row">
+                    <div class="col-lg-3">
+                        <label>Default Image</label>
+                    </div>
+                    <div class="col-lg-8">
+                        @{imagepath = d.DefaultImage;
+                            catid = d.CategoryID;}
+                        <img src="@d.DefaultImage" width="50" height="50" />
+                        <input type="file" id="imageid" class="form-control"/>
+                    </div>
+                </div>
+                <div class="col-lg-12 row form-group">
+                    <div class="col-lg-3">
+
+                    </div>
+                    <div class="col-lg-4 ">
+                        <button class="btn btn-success " id="updateid" style="margin-left:160px">Update</button>&nbsp;&nbsp;<button class="btn btn-success pull-right " id="Cancelbtn">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.intellisense.js"></script>
+
+
+
+
+<script>
+    $('#updateid').click(function () {
+
+        fnEdit();
+    })
+    function fnEdit() {
+        debugger;
+        var name = $('#CatName').val();
+        var imagepath=$('#imageid').val();
+
+        $.ajax({
+            url: '/Category/UpdateData/',
+            type: 'POST',
+            data: {
+                CatID:@catid,
+                Catname: name,
+                ImagePath:imagepath,
+            },
+            success: function (result) {
+                alert(result);
+            },
+            complete: function () {
+                window.location.href = '@Url.Action("CategoryList", "Category")';
+            }
+        });
+    }
+    $('#Cancelbtn').click(function () {
+        window.location.href = '@Url.Action("CategoryList", "Category")';
+
+    })
+</script>
